@@ -1,10 +1,17 @@
 <script setup>
 	import { RouterLink, RouterView } from 'vue-router';
 	import { ref, reactive, onMounted } from 'vue';
+	import CreateNewAsset from './components/CreateNewAsset.vue';
 
 	const url = ref('');
 	const token = ref('');
 	const isRegisterView = ref(false);
+	const showCreateNewAssetModal = ref(false);
+
+	const handleShowCreateNewAssetModel = () => {
+		showCreateNewAssetModal.value = !showCreateNewAssetModal.value;
+		console.log(showCreateNewAssetModal.value);
+	};
 
 	const baseURL = window.location.origin;
 	url.value = new URL(location.href);
@@ -22,6 +29,13 @@
 	});
 </script>
 <template>
+	<CreateNewAsset
+		v-if="showCreateNewAssetModal"
+		@closeCreateNewAssetModal="
+			() => (showCreateNewAssetModal = false)
+		"
+	></CreateNewAsset>
+
 	<nav
 		class="navbar"
 		role="navigation"
@@ -49,7 +63,10 @@
 		<div id="navbarBasicExample" class="navbar-menu">
 			<div class="navbar-start ml-6">
 				<div class="buttons are-normal">
-					<button class="button is-info is-outlined">
+					<button
+						@click="handleShowCreateNewAssetModel"
+						class="button is-info is-outlined"
+					>
 						Create new Asset
 					</button>
 					<button class="button is-info is-outlined">
