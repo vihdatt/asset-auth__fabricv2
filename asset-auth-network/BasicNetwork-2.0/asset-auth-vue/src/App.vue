@@ -2,15 +2,22 @@
 	import { RouterLink, RouterView } from 'vue-router';
 	import { ref, reactive, onMounted } from 'vue';
 	import CreateNewAsset from './components/CreateNewAsset.vue';
+	import SearchAnAsset from './components/SearchAnAsset.vue';
 
 	const url = ref('');
 	const token = ref('');
 	const isRegisterView = ref(false);
 	const showCreateNewAssetModal = ref(false);
+	const showSearchAnAssetModal = ref(false);
 
 	const handleShowCreateNewAssetModel = () => {
 		showCreateNewAssetModal.value = !showCreateNewAssetModal.value;
 		console.log(showCreateNewAssetModal.value);
+	};
+
+	const handleShowSearchAnAssetModal = () => {
+		showSearchAnAssetModal.value = !showSearchAnAssetModal.value;
+		console.log(showSearchAnAssetModal.value);
 	};
 
 	const baseURL = window.location.origin;
@@ -18,6 +25,10 @@
 
 	const handleLogout = () => {
 		localStorage.removeItem('token');
+		window.open('/', '_self');
+	};
+
+	const reloadPage = () => {
 		window.open('/', '_self');
 	};
 
@@ -35,6 +46,11 @@
 			() => (showCreateNewAssetModal = false)
 		"
 	></CreateNewAsset>
+
+	<SearchAnAsset
+		v-if="showSearchAnAssetModal"
+		@closeSearchAnAssetModal="() => (showCreateNewAssetModal = false)"
+	></SearchAnAsset>
 
 	<nav
 		class="navbar"
@@ -69,16 +85,29 @@
 					>
 						Create new Asset
 					</button>
-					<button class="button is-info is-outlined">
+					<button
+						@click="reloadPage"
+						class="button is-info is-outlined"
+					>
 						Show all Asset
 					</button>
-					<button class="button is-info is-outlined">
+					<!-- <button
+						class="button is-info is-outlined"
+						@click="handleShowSearchAnAssetModal"
+					>
 						Search for an Asset
-					</button>
+					</button> -->
 				</div>
 			</div>
 
 			<div class="navbar-end">
+				<!-- <div class="navbar-item">
+					<input
+						class="input"
+						type="text"
+						placeholder="Search for an Asset"
+					/>
+				</div> -->
 				<div class="navbar-item">
 					<div class="buttons">
 						<!-- <a class="button is-light"> Log in </a> -->

@@ -1,3 +1,50 @@
+<script setup>
+	import APIClient from '../api/APIClient';
+	import { ref, reactive } from 'vue';
+
+	const emit = defineEmits(['handleShowCreateNewAssetModel']);
+
+	const asset = reactive({
+		key: '',
+		manufacturer: '',
+		name: '',
+		serialNumber: '',
+		ownerID: '',
+		ownerName: '',
+	});
+
+	const handleSubmit = () => {
+		console.log(asset.key);
+		if (
+			asset.key.trim() != '' &&
+			asset.manufacturer.trim() != '' &&
+			asset.name.trim() != '' &&
+			asset.serialNumber.trim() != '' &&
+			asset.ownerID.trim() != '' &&
+			asset.ownerName.trim() != ''
+		) {
+			APIClient.createAnAsset({
+				args: [
+					asset.key,
+					asset.manufacturer,
+					asset.name,
+					asset.serialNumber,
+					asset.ownerID,
+					asset.ownerName,
+				],
+			}).then((rs) => {
+				console.log(rs);
+				if (rs.data.error == null) {
+					alert('Create successfully!');
+					window.open('/', '_self');
+				} else {
+					alert('Create failed!');
+				}
+			});
+		}
+	};
+</script>
+
 <template>
 	<div class="modal is-active">
 		<div class="modal-background"></div>
@@ -6,112 +53,96 @@
 				<h1 class="title has-text-centered">Create New Asset</h1>
 
 				<div class="field">
+					<label class="label">Key</label>
+					<div class="control">
+						<input
+							class="input"
+							type="text"
+							placeholder="Asset Key"
+							v-model="asset.key"
+						/>
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Manufacturer</label>
+					<div class="control">
+						<div class="select">
+							<select v-model="asset.manufacturer">
+								<option>Car</option>
+								<option>Motorbike</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="field">
 					<label class="label">Name</label>
 					<div class="control">
 						<input
 							class="input"
 							type="text"
-							placeholder="Text input"
+							placeholder="Asset Name"
+							v-model="asset.name"
 						/>
 					</div>
 				</div>
+
 				<div class="field">
-					<label class="label">Username</label>
-					<div class="control has-icons-left has-icons-right">
+					<label class="label">Serial Number</label>
+					<div class="control">
 						<input
-							class="input is-success"
+							class="input"
 							type="text"
-							placeholder="Text input"
-							value="bulma"
+							placeholder="Serial Number"
+							v-model="asset.serialNumber"
 						/>
-						<span class="icon is-small is-left">
-							<i class="fas fa-user"></i>
-						</span>
-						<span class="icon is-small is-right">
-							<i class="fas fa-check"></i>
-						</span>
 					</div>
-					<p class="help is-success">This username is available</p>
 				</div>
+
 				<div class="field">
-					<label class="label">Email</label>
-					<div class="control has-icons-left has-icons-right">
+					<label class="label">Owner ID</label>
+					<div class="control">
 						<input
-							class="input is-danger"
-							type="email"
-							placeholder="Email input"
-							value="hello@"
+							class="input"
+							type="text"
+							placeholder="Owner ID"
+							v-model="asset.ownerID"
 						/>
-						<span class="icon is-small is-left">
-							<i class="fas fa-envelope"></i>
-						</span>
-						<span class="icon is-small is-right">
-							<i class="fas fa-exclamation-triangle"></i>
-						</span>
 					</div>
-					<p class="help is-danger">This email is invalid</p>
 				</div>
+
 				<div class="field">
-					<label class="label">Subject</label>
+					<label class="label">Owner Name</label>
 					<div class="control">
-						<div class="select">
-							<select>
-								<option>Select dropdown</option>
-								<option>With options</option>
-							</select>
-						</div>
+						<input
+							class="input"
+							type="text"
+							placeholder="Owner Name"
+							v-model="asset.ownerName"
+						/>
 					</div>
 				</div>
-				<div class="field">
-					<label class="label">Message</label>
+
+				<div class="field is-grouped mt-5">
 					<div class="control">
-						<textarea
-							class="textarea"
-							placeholder="Textarea"
-						></textarea>
-					</div>
-				</div>
-				<div class="field">
-					<div class="control">
-						<label class="checkbox">
-							<input type="checkbox" />
-							I agree to the <a href="#">terms and conditions</a>
-						</label>
-					</div>
-				</div>
-				<div class="field">
-					<div class="control">
-						<label class="radio">
-							<input type="radio" name="question" />
-							Yes
-						</label>
-						<label class="radio">
-							<input type="radio" name="question" />
-							No
-						</label>
-					</div>
-				</div>
-				<div class="field is-grouped">
-					<div class="control">
-						<button class="button is-link">Submit</button>
+						<button class="button is-link" @click="handleSubmit">
+							Create
+						</button>
 					</div>
 					<div class="control">
-						<button class="button is-link is-light">Cancel</button>
+						<button
+							class="button is-link is-light"
+							@click="$emit('closeCreateNewAssetModal')"
+						>
+							Cancel
+						</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		<button
-			@click="$emit('closeCreateNewAssetModal')"
-			class="modal-close is-large"
-			aria-label="close"
-		></button>
 	</div>
 </template>
-
-<script setup>
-	const emit = defineEmits(['handleShowCreateNewAssetModel']);
-</script>
 
 <style scoped>
 	.container {
